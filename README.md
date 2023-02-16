@@ -1,2 +1,2 @@
-# Projekt---Datateknik
+# Projekt-Datateknik
 Flappy Bird game 
