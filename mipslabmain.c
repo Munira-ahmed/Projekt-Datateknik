@@ -49,32 +49,24 @@ int main(void) {
 	/* SPI2STAT bit SPIROV = 0; */
 	SPI2STATCLR = 0x40;
 	/* SPI2CON bit CKP = 1; */
-        SPI2CONSET = 0x40;
+    SPI2CONSET = 0x40;
 	/* SPI2CON bit MSTEN = 1; */
 	SPI2CONSET = 0x20;
 	/* SPI2CON bit ON = 1; */
 	SPI2CONSET = 0x8000;
 
 	display_init();
-	display_string(0, "KTH/ICT lab");
-	display_string(1, "in Computer");
-	display_string(2, "Engineering");
-	display_string(3, "Welcome!");
-	display_update();
-
-	display_image(96, icon);
-
 
 	labinit(); /* Do any lab-specific initialization */
 
-	InteruptFlag40ms = 0;
+	InteruptFlag = 0; //40ms
 
 
 	while( 1 )
 	{
-		if(InteruptFlag40ms == 1){
-	  labwork(); /* Do lab-specific things again and again */
-		InteruptFlag40ms = 0;
+		if(InteruptFlag == 1){ 
+	      labwork(); /* Do lab-specific things again and again */
+		InteruptFlag = 0;
 		}
 	}
 	return 0;

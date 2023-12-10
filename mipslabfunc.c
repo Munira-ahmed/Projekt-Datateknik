@@ -3,7 +3,7 @@
 #include "mipslab.h"  /* Declatations for these labs */
 #include <math.h>
 
-
+/*These are all the functions from the labs*/
 /* Declare a helper function which is local to this file */
 static void num32asc( char * s, int );
 
@@ -28,7 +28,7 @@ void display_string_clear (void) {
 
 	int i;
 	for (i = 0; i < 4; i++){
-		display_string(i, "");            // "" Behövs för att resna skrärmen av tidigare display_string
+		display_string(i, "");            
 	}
 }
 

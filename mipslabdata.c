@@ -1,6 +1,6 @@
 /* mipslabdata.c
-   This file compiled 2015 by F Lundevall
-   from original code written by Axel Isaksson
+   
+   This file was changed and updated 2023-12-10 by Munira Ahmed & Fariba Mohammedi
 
    For copyright and licensing, see file COPYING */
 
@@ -13,16 +13,7 @@
 
 
 char textbuffer[4][16];
-char s[4][20];
-extern uint8_t obstacles[5*60];
-extern int objectPosLevel1[64*2];
-extern int objectPosLevel1Reset[64*2];
 
-
-int gameState = 2;
-
-
- int countStart = 0;
 
 const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -157,7 +148,7 @@ const uint8_t const font[] = {
 
 
 
- uint8_t icon[] = {
+ uint8_t background[] = {
 	255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255,

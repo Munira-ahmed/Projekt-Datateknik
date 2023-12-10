@@ -39,28 +39,16 @@ void display_debug( volatile int * const addr );
 
 /* Declare bitmap array containing font */
 extern const uint8_t const font[128*8];
-/* Declare bitmap array containing icon */
-extern  uint8_t  icon[128*4];
+/* Declare bitmap array containing background */
+extern  uint8_t  background[128*4];
 extern char textbuffer[4][16];
-extern char s[4][20];
 
-extern gameState;
-extern countStart;
+extern StageInTheGame;//to know if the what stage we are in: start, game over, or playing in labwork
 
 
-int extern x;       //Tacon som flyger
-int extern y;
+int InteruptFlag;
 
-int extern x1;  //tubarna
-int extern x2;
 
-int InteruptFlag40ms;
-
-/* Declare functions written by students.
-   Note: Since we declare these functions here,
-   students must define their functions with the exact types
-   specified in the laboratory instructions. */
-/* Written as part of asm lab: delay, time2string */
 void delay(int);
 void time2string( char *, int );
 /* Written as part of i/o lab: getbtns, getsw, enable_interrupt */

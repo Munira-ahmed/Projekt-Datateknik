@@ -3,8 +3,7 @@
    This file written 2015 by F Lundevall
    Updated 2017-04-21 by F Lundevall
 
-   This file should be changed by YOU! So you must
-   add comment(s) here with your name(s) and date(s):
+   This file was changed and updated 2023-12-10 by Munira Ahmed & Fariba Mohammedi
 
    This file modified 2017-04-31 by Ture Teknolog
 
@@ -17,7 +16,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#define MAX_TUBES 5
+#define MAX_TUBES 8
 #define TUBE_SPAWN_CHANCE 4
 #define TUBE_WIDTH 5
 #define TUBE_HEIGHT 60
@@ -27,17 +26,18 @@ int tubeY[MAX_TUBES] = {0};
 int tubeExists[MAX_TUBES] = {0};
 int tubesPassed = 0;
 
+int StageInTheGame = 2;
 int x = 15;
 int y = 5;
 
 // Function to create a new tube
-void createTube() {
+void createTube() {  // by Munira
     int i;
     for (i = 0; i < MAX_TUBES; i++) {
         if (!tubeExists[i]) {
-            // Set tube position and mark it as existing
+            // Set tube position and mark  as existing
             tubeX[i] = 128;               // Set initial X position to the right side
-            tubeY[i] = getRandomInRange(30, 20);     // Use your logic to set Y position
+            tubeY[i] = getRandomInRange(16, 25);     //  set Y position, controls the height of the obstacles (different heights).
             tubeExists[i] = 1;
             break;
         }
@@ -45,7 +45,7 @@ void createTube() {
 }
 
 /// Function to update tube position
-void updateTubePositions() {
+void updateTubePositions() {  // by Munira
     int i;
     for (i = 0; i < MAX_TUBES; i++) {
         if (tubeExists[i]) {
@@ -54,7 +54,7 @@ void updateTubePositions() {
                 tubeExists[i] = 0;  // Mark the tube as passed
             }
             // Clear the previous tube position
-            drawObjectTube(tubeX[i], tubeY[i], 1); // 1 to clear pixels
+            drawObjectTube(tubeX[i], tubeY[i]); // 1 to clear pixels
 
             // Update tube position
             tubeX[i]--;
@@ -65,7 +65,7 @@ void updateTubePositions() {
                 tubeExists[i] = 0;
             } else {
                 // Draw the tube at the updated position
-                drawObjectTube(tubeX[i], tubeY[i], 0); // 0 to set pixels
+                drawObjectTube(tubeX[i], tubeY[i]); // 0 to set pixels
             }
         }
     }
@@ -80,7 +80,7 @@ volatile int *initPORTE = (volatile int *)0xbf886110;
 void user_isr(void)
 {
   IFSCLR(0) = 0x100;
-  InteruptFlag40ms = 1;
+  InteruptFlag = 1;
   return;
 }
 
@@ -115,88 +115,99 @@ void labinit(void)
     return;
 }
 
-void labwork(void) {
+//The code here was written by both Munira and Fariba
+void gameoverStage(void) {
     int i;
 
-    if (gameState == 1) {
-        // Game over logic
-        display_string_clear();
-        display_string(0, "GAME OVER");
+    // Game over logic
+    display_string_clear();
+    display_string(0, "GAME OVER");
 
-        // Convert the score (tubesPassed) to a string
-        char tubesPassedStr[10];
-        intToStr(tubesPassed, tubesPassedStr, sizeof(tubesPassedStr));
+    // Convert the score (tubesPassed) to a string
+    char* strScore = itoaconv(tubesPassed);
 
-        // Display the score as part of the string
-        display_string(2, "score: ");
-        display_string(3, tubesPassedStr);
+    // Display the score as part of the string
+    display_string(2, "score: ");
+    display_string(3, strScore);
 
-        delay(100);
-        display_update();
+    delay(100);
+    display_update();
 
-         // Clear all tubes
-        for (i = 0; i < MAX_TUBES; i++) {
-            tubeExists[i] = 0;
-        }
-        // Reset game state and objects
-        x = 15;
-        y = 5;
-
-        if (getbtns()) {
-            tubesPassed = 0;
-            clearScreenMemory();
-            display_image(0, icon);
-            display_string_clear();
-            display_update();
-            gameState = 2;
-        }
+    // Clear all tubes
+    for (i = 0; i < MAX_TUBES; i++) {
+        tubeExists[i] = 0;
     }
 
-    if (gameState == 2) {
-        // Main Menu/Start Screen logic
-        display_string_clear();
-        delay(10);
-        display_string(0, "  Flappy Bird");
-        display_update();
+    // Reset game state and objects
+    x = 15;
+    y = 5;
 
-        if (getbtns() == 4) {
-            MainMenuFade();
-            StartCountDown();
-        }
-    }
-
-   if (gameState == 0) {
-        // Game logic when in the playing state
+    if (getbtns()) {
+        tubesPassed = 0;
         clearScreenMemory();
-        y += 1; // Move taco down (Gravitation)
-        drawBird(x, y);
+        display_image(0, background);
+        display_string_clear();
+        display_update();
+        countDown();
+        StageInTheGame = 0;
+    }
+}
 
-        // Randomly create a new tube with a chance of TUBE_SPAWN_CHANCE
-        if (getRandomInRange(1, 100) <= TUBE_SPAWN_CHANCE) {
-            createTube();
-        }
+void startScreenStage(void) {
+    // Main Menu/Start Screen logic
+    display_string_clear();
+    delay(10);
+    display_string(0, "  Flappy Bird");
+    display_update();
 
-        // Update and draw the tubes
-        updateTubePositions();
-        int GAP_WIDTH = 35;
-        // Draw all tubes
-        for (i = 0; i < MAX_TUBES; i++) {
-            if (tubeExists[i]) {
-                drawObjectTube(tubeX[i], tubeY[i]);
-                
-                // Check for collision with the bird
-                if (detectCollision(x, y, tubeX[i], tubeY[i], TUBE_WIDTH, TUBE_HEIGHT, GAP_WIDTH)) {
-                    gameState = 1;  // Collision detected, set game over state
-                }
+    if (getbtns() == 4) {
+        countDown();
+    }
+}
+
+void playingStage(void) {
+    int i;
+
+    // Game logic when in the playing state
+    clearScreenMemory();
+    y += 1; // move the bird down constantly
+    drawBird(x, y);
+
+    // Randomly create a new tube with a chance of TUBE_SPAWN_CHANCE
+    if (getRandomInRange(1, 100) <= TUBE_SPAWN_CHANCE) {
+        createTube();
+    }
+
+    // Update and draw the tubes
+    updateTubePositions();
+
+    // Draw all tubes
+    for (i = 0; i < MAX_TUBES; i++) {
+        if (tubeExists[i]) {
+            drawObjectTube(tubeX[i], tubeY[i]);
+
+            // Check for collision with the bird
+            if (detectCollision(x, y, tubeX[i], tubeY[i], TUBE_WIDTH, TUBE_HEIGHT)) {
+                StageInTheGame = 1; // Collision detected, go to game over stage
             }
         }
+    }
 
-        // Display updated image
-        display_image(0, icon);
+    // Display updated image
+    display_image(0, background);
 
-        // Handle button press
-        if (getbtns()) {
-            y -= 3; // Taco moves up when the button is pressed
-        }
+    // Handle button press
+    if (getbtns()) {
+        y -= 3; // The bird moves up when the buttons 4,3 and 2 are pressed. Button 1 has no function.
+    }
+}
+
+void labwork(void) {
+    if (StageInTheGame == 1) {
+        gameoverStage();
+    } else if (StageInTheGame == 2) {
+        startScreenStage();
+    } else {
+        playingStage();
     }
 }
