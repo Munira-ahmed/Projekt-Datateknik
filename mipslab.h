@@ -1,3 +1,7 @@
+#include <stdint.h>
+
+/* Rest of the code in mipslab.h */
+
 /* mipslab.h
    Header file for all labs.
    This file written 2015 by F Lundevall
@@ -6,7 +10,6 @@
    Latest update 2015-08-28 by F Lundevall
 
    For copyright and licensing, see file COPYING */
-
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);
 void display_init(void);
@@ -17,7 +20,6 @@ uint8_t spi_send_recv(uint8_t data);
 /* Declare lab-related functions from mipslabfunc.c */
 char * itoaconv( int num );
 void labwork(void);
-int nextprime( int inval );
 void quicksleep(int cyc);
 void tick( unsigned int * timep );
 
@@ -38,9 +40,21 @@ void display_debug( volatile int * const addr );
 /* Declare bitmap array containing font */
 extern const uint8_t const font[128*8];
 /* Declare bitmap array containing icon */
-extern const uint8_t const icon[128];
-/* Declare text buffer for display output */
+extern  uint8_t  icon[128*4];
 extern char textbuffer[4][16];
+extern char s[4][20];
+
+extern gameState;
+extern countStart;
+
+
+int extern x;       //Tacon som flyger
+int extern y;
+
+int extern x1;  //tubarna
+int extern x2;
+
+int InteruptFlag40ms;
 
 /* Declare functions written by students.
    Note: Since we declare these functions here,
@@ -53,3 +67,4 @@ void time2string( char *, int );
 int getbtns(void);
 int getsw(void);
 void enable_interrupt(void);
+

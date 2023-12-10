@@ -26,6 +26,7 @@
 .global enable_interrupt
 .align 2 
 .text
+
 main:
 
 enable_interrupt:
